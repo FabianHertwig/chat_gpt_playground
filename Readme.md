@@ -9,6 +9,10 @@ Install dependencies:
 
     pip install -r requirements.txt
 
+Set your OpenAI api key in the `.streamlit./secrets.toml` file
+
+    cp ./.streamlit./secrets_example.toml ./.streamlit./secrets.toml
+
 Run the streamlit app locally
 
     streamlit run app.py
@@ -18,8 +22,19 @@ Run the streamlit app locally
 
 Python >= 3.11
 
+Install additional developer requirements
+
+    pip install -r requirements-dev.py
+
+
 Install tools that check code style:
 
-    pip install ruff
-    pip install pre-commit
     pre-commit install
+
+To run the tests create an `.env` file with your OpenAI api key
+
+    cp .env-example .env
+
+Run the tests. You can enable online tests in the `./tests/test_config.py` file.
+
+    pytest tests
