@@ -1,0 +1,25 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.3.0
+    hooks:
+      - id: check-ast # checks Python syntax
+      - id: check-json # checks JSON syntax
+      - id: check-yaml # checks YAML syntax
+      - id: check-toml # checks TOML syntax
+      - id: end-of-file-fixer # checks there is a newline at the end of the file
+      - id: trailing-whitespace # trims trailing whitespace
+      - id: check-merge-conflict # checks for no merge conflict strings
+      - id: mixed-line-ending # normalizes line endings
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: 'v0.0.252'
+    hooks:
+      - id: ruff
+  - repo: https://github.com/psf/black
+    rev: 22.10.0
+    hooks:
+      - id: black
+  - repo: https://github.com/pycqa/isort
+    rev: 5.11.2
+    hooks:
+      - id: isort
+        name: isort (python)
