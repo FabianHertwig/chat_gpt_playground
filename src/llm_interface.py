@@ -4,29 +4,6 @@ from datetime import datetime
 import openai
 
 
-def get_default_system_message():
-    knowledge_cutoff = "September 2021"
-    current_date = datetime.now().strftime("%B %d, %Y")
-    return (
-        "You are ChatGPT, a large language model trained by OpenAI."
-        " Answer as concisely as possible. "
-        f"Knowledge cutoff: {knowledge_cutoff} Current date: {current_date}"
-    )
-
-
-def generate_response(prompt):
-    completions = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=prompt,
-        max_tokens=1024,
-        n=1,
-        stop=None,
-        temperature=0.5,
-    )
-    message = completions.choices[0].text
-    return message
-
-
 @dataclass
 class Message:
     role: str
@@ -47,6 +24,16 @@ class MessageHistory:
 
     def get_messages_as_dict(self):
         return [message.__dict__ for message in self.messages]
+
+
+def get_default_system_message():
+    knowledge_cutoff = "September 2021"
+    current_date = datetime.now().strftime("%B %d, %Y")
+    return (
+        "You are ChatGPT, a large language model trained by OpenAI."
+        " Answer as concisely as possible. "
+        f"Knowledge cutoff: {knowledge_cutoff} Current date: {current_date}"
+    )
 
 
 def chat(message, message_history: MessageHistory):
