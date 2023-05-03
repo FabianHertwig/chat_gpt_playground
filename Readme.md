@@ -17,6 +17,7 @@ Run the streamlit app locally
 
     streamlit run app.py
 
+The default password is `password`.
 
 # Contributing
 
