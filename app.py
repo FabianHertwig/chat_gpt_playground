@@ -46,10 +46,8 @@ if check_password():
             height=200,
         )
 
-    # Creating the chatbot interface
     st.title("Chat GPT Playground")
 
-    # Storing the chat
     if "message_history" not in st.session_state:
         st.session_state["message_history"] = MessageHistory(system_message)
 
@@ -66,7 +64,9 @@ if check_password():
         st.session_state.message_history = message_history
         st.session_state["input"] = ""
 
-    user_input = st.text_input("You: ", "", key="input", on_change=clear_text_input)
+    user_input = st.text_area(
+        "You: ", "", key="input", on_change=clear_text_input, height=200
+    )
 
     for i, mes in enumerate(st.session_state.message_history.get_messages()[::-1]):
         is_user = mes.role == "user"
