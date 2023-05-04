@@ -1,7 +1,19 @@
+import logging
 from dataclasses import dataclass
 from datetime import datetime
 
 import openai
+
+logger = logging.getLogger(__name__)
+
+
+def configure_openai_api(
+    api_key, api_type="open_ai", api_base="https://api.openai.com/v1", api_version=None
+):
+    openai.api_key = api_key
+    openai.api_base = api_base
+    openai.api_type = api_type
+    openai.api_version = api_version
 
 
 @dataclass
@@ -36,10 +48,12 @@ def get_default_system_message():
     )
 
 
-def chat(message, message_history: MessageHistory):
+def chat(message, message_history: MessageHistory, model, engine):
     message_history.add_message("user", message)
+
+    logger.debug(f"{model=}, {engine=},")
     result = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo", messages=message_history.get_messages_as_dict()
+        model=model, engine=engine, messages=message_history.get_messages_as_dict()
     )
     message_history.add_message(
         result.choices[0].message.role, result.choices[0].message.content
