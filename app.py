@@ -7,6 +7,7 @@ from src.app.login import check_password
 from src.app.secrets import get_secret
 from src.llm_interface import (
     MessageHistory,
+    Role,
     chat,
     configure_openai_api,
     get_default_system_message,
@@ -69,7 +70,10 @@ if check_password():
     )
 
     for i, mes in enumerate(st.session_state.message_history.get_messages()[::-1]):
-        is_user = mes.role == "user"
+        if mes.role == Role.SYSTEM:
+            continue
+
+        is_user = mes.role == Role.USER
         if is_user:
             avatar_id = 10  # 6
         else:

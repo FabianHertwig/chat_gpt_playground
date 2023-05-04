@@ -1,7 +1,7 @@
 import pytest
 from dotenv import load_dotenv
 
-from src.llm_interface import MessageHistory, chat, get_default_system_message
+from src.llm_interface import MessageHistory, Role, chat, get_default_system_message
 from tests.test_config import no_online_tests
 
 
@@ -12,6 +12,19 @@ def test_chat_history_should_return_dict():
     result = message_history.get_messages_as_dict()
     # THEN
     assert isinstance(result, list)
+    assert isinstance(result[0], dict)
+
+
+def test_chat_history_adding_a_message_should_add_message():
+    # GIVEN
+    message_history = MessageHistory("The system message")
+    # WHEN
+    message_history.add_message(Role.USER, "The user message")
+    result = message_history.get_messages_as_dict()
+
+    # THEN
+    assert isinstance(result, list)
+    assert len(result) == 2
     assert isinstance(result[0], dict)
 
 

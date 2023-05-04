@@ -1,6 +1,7 @@
 import logging
 from dataclasses import dataclass
 from datetime import datetime
+from enum import Enum
 
 import openai
 
@@ -16,15 +17,21 @@ def configure_openai_api(
     openai.api_version = api_version
 
 
+class Role(str, Enum):
+    SYSTEM = "system"
+    ASSISTANT = "assistant"
+    USER = "user"
+
+
 @dataclass
 class Message:
-    role: str
+    role: Role
     content: str
 
 
 class MessageHistory:
     def __init__(self, system_message: str, history_length: int = 10):
-        self.messages = [Message("system", system_message)]
+        self.messages = [Message(Role.SYSTEM, system_message)]
         self.history_length = history_length
 
     def add_message(self, role, content):
@@ -49,13 +56,13 @@ def get_default_system_message():
 
 
 def chat(message, message_history: MessageHistory, model, engine):
-    message_history.add_message("user", message)
+    message_history.add_message(Role.USER, message)
 
     logger.debug(f"{model=}, {engine=},")
     result = openai.ChatCompletion.create(
         model=model, engine=engine, messages=message_history.get_messages_as_dict()
     )
     message_history.add_message(
-        result.choices[0].message.role, result.choices[0].message.content
+        Role(result.choices[0].message.role), result.choices[0].message.content
     )
     return message_history
