@@ -55,12 +55,18 @@ def get_default_system_message():
     )
 
 
-def chat(message, message_history: MessageHistory, model, engine):
+def chat(
+    message, message_history: MessageHistory, model, engine, temperature=1.0, top_p=1.0
+):
     message_history.add_message(Role.USER, message)
 
     logger.debug(f"{model=}, {engine=},")
     result = openai.ChatCompletion.create(
-        model=model, engine=engine, messages=message_history.get_messages_as_dict()
+        model=model,
+        engine=engine,
+        messages=message_history.get_messages_as_dict(),
+        temperature=temperature,
+        top_p=top_p,
     )
     message_history.add_message(
         Role(result.choices[0].message.role), result.choices[0].message.content

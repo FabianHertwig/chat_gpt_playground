@@ -46,16 +46,61 @@ if check_password():
             value=get_default_system_message(),
             height=200,
         )
+        st.markdown("# Settings")
+        history_length = st.slider(
+            "Messages in context",
+            1,
+            100,
+            10,
+            key="history_length",
+            help=(
+                "The number of messages of the current conversation "
+                "which are used as context for the model."
+            ),
+        )
+        temperature = st.slider(
+            "Temperature",
+            0.0,
+            2.0,
+            1.0,
+            0.1,
+            key="temperature",
+            help=(
+                "What sampling temperature to use, between 0 and 2. "
+                "Higher values like 0.8 will make the output more random, "
+                "while lower values like 0.2 will make it more focused and "
+                "deterministic."
+            ),
+        )
+        top_p = st.slider(
+            "Top P",
+            0.0,
+            1.0,
+            1.0,
+            0.1,
+            key="top_p",
+            help=(
+                "An alternative to sampling with temperature, called nucleus sampling, "
+                "where the model considers the results of the tokens with top_p "
+                "probability mass. So 0.1 means only the tokens comprising the "
+                "top 10% probability mass are considered."
+            ),
+        )
 
     st.title("Chat GPT Playground")
 
     if "message_history" not in st.session_state:
-        st.session_state["message_history"] = MessageHistory(system_message)
+        st.session_state["message_history"] = MessageHistory(
+            system_message, history_length
+        )
 
     if st.button("Clear chat"):
-        st.session_state.message_history = MessageHistory(system_message)
+        st.session_state.message_history = MessageHistory(
+            system_message, history_length
+        )
+    st.session_state.message_history.history_length = history_length
 
-    def clear_text_input():
+    def send_message():
         message_history = chat(
             st.session_state["input"],
             st.session_state.message_history,
@@ -66,7 +111,7 @@ if check_password():
         st.session_state["input"] = ""
 
     user_input = st.text_area(
-        "You: ", "", key="input", on_change=clear_text_input, height=200
+        "You: ", "", key="input", on_change=send_message, height=200
     )
 
     for i, mes in enumerate(st.session_state.message_history.get_messages()[::-1]):
@@ -75,7 +120,7 @@ if check_password():
 
         is_user = mes.role == Role.USER
         if is_user:
-            avatar_id = 10  # 6
+            avatar_id = 10
         else:
             avatar_id = 11
         message(
